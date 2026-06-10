@@ -1,0 +1,31 @@
+{
+  "name": "shipyard-web",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Docs and marketing site for Shipyard.",
+  "scripts": {
+    "dev": "next dev -p 3006",
+    "build": "next build",
+    "start": "next start -p 3006",
+    "lint": "next lint",
+    "deploy": "node .scripts/deploy.js"
+  },
+  "dependencies": {
+    "next": "15.5.16",
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.0",
+    "@types/node": "22.10.5",
+    "@types/react": "19.0.7",
+    "@types/react-dom": "19.0.3",
+    "eslint": "9.18.0",
+    "eslint-config-next": "15.5.16",
+    "tailwindcss": "^4.3.0",
+    "typescript": "5.7.3"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}

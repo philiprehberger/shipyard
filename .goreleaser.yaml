@@ -1,0 +1,67 @@
+version: 2
+
+project_name: shipyard
+
+builds:
+  - id: shipyard
+    dir: cli
+    main: ./cmd/shipyard
+    binary: shipyard
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ignore:
+      - goos: windows
+        goarch: arm64
+    ldflags:
+      - -s -w
+      - -X github.com/philiprehberger/shipyard/cli/internal/version.Version={{ .Version }}
+      - -X github.com/philiprehberger/shipyard/cli/internal/version.Commit={{ .ShortCommit }}
+      - -X github.com/philiprehberger/shipyard/cli/internal/version.Date={{ .Date }}
+
+archives:
+  - id: shipyard
+    name_template: "shipyard_{{ .Os }}_{{ .Arch }}"
+    formats:
+      - tar.gz
+    format_overrides:
+      - goos: windows
+        formats:
+          - zip
+    files:
+      - LICENSE
+      - README.md
+      - CHANGELOG.md
+      - examples/*.yaml
+
+checksum:
+  name_template: 'shipyard_{{ .Version }}_checksums.txt'
+
+changelog:
+  disable: true
+
+release:
+  github:
+    owner: philiprehberger
+    name: shipyard
+  draft: false
+  prerelease: auto
+  name_template: "Shipyard {{ .Tag }}"
+  header: |
+    See [CHANGELOG.md](https://github.com/philiprehberger/shipyard/blob/main/CHANGELOG.md) for full release notes.
+  footer: |
+    ---
+
+    Install via `go install`:
+
+    ```sh
+    go install github.com/philiprehberger/shipyard/cli/cmd/shipyard@{{ .Tag }}
+    ```
+
+    Or download the matching `.tar.gz` / `.zip` above and `mv shipyard /usr/local/bin/`.

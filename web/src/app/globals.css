@@ -102,6 +102,10 @@ ul, ol {
   line-height: 1.7;
 }
 
+ul { list-style-type: disc; }
+ol { list-style-type: decimal; }
+ul li, ol li { padding-left: 0.25rem; }
+
 ul li, ol li {
   margin-bottom: 0.35rem;
   opacity: 0.92;

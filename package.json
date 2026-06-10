@@ -1,0 +1,18 @@
+{
+  "name": "shipyard-monorepo",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Atomic-release deploy CLI + docs site. The Go binary lives under cli/; the Next.js docs site lives under web/.",
+  "scripts": {
+    "build": "cd cli && go build -o ../dist/shipyard ./cmd/shipyard",
+    "test": "cd cli && go test ./...",
+    "test:race": "cd cli && go test -race ./...",
+    "lint": "cd cli && golangci-lint run",
+    "web:dev": "cd web && npm run dev",
+    "web:build": "cd web && npm run build",
+    "web:deploy": "cd web && npm run deploy"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}

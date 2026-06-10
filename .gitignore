@@ -1,0 +1,32 @@
+# Go
+/cli/shipyard
+/cli/shipyard.exe
+/dist/
+*.test
+*.out
+coverage.txt
+
+# Node / Next.js
+/web/node_modules/
+/web/.next/
+/web/out/
+/web/.env*
+!/web/.env.example
+
+# Deploy
+/.scripts/.env
+/.env
+/.env.deployment
+!/.env.example
+!/.env.deployment.example
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Local state
+.local/
+*.log

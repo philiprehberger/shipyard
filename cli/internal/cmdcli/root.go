@@ -1,12 +1,13 @@
 package cmdcli
 
 import (
+	"errors"
 	"fmt"
 	"io"
-	"os"
 
 	"github.com/spf13/cobra"
 
+	"github.com/philiprehberger/shipyard/cli/internal/deploy"
 	"github.com/philiprehberger/shipyard/cli/internal/version"
 )
 
@@ -29,9 +30,7 @@ Exit codes:
 Docs: https://shipyard.philiprehberger.com
 Source: https://github.com/philiprehberger/shipyard`
 
-// NewRootCmd builds the root cobra command. The version subcommand is
-// always wired; the rest are skeleton stubs in Phase 1 and become real
-// in later phases.
+// NewRootCmd builds the root cobra command and wires every subcommand.
 func NewRootCmd() *cobra.Command {
 	root := &cobra.Command{
 		Use:           "shipyard",
@@ -42,7 +41,6 @@ func NewRootCmd() *cobra.Command {
 		SilenceErrors: true,
 	}
 
-	// Global flags
 	root.PersistentFlags().Bool("no-color", false, "disable colored output (also honors NO_COLOR env var)")
 	root.PersistentFlags().Bool("verbose", false, "verbose logging — emits JSON to stderr in addition to pretty stdout")
 
@@ -74,23 +72,24 @@ func Execute(stdout, stderr io.Writer, args []string) int {
 	return 0
 }
 
-// exitCodeFor maps known error sentinels to the documented exit codes.
-// In Phase 1 every command returns nil or a generic error, so we default
-// to 1. Later phases wrap errors with shipyarderr.WithCode so this can
-// inspect them.
+// exitCodeFor maps known error sentinels to documented exit codes.
 func exitCodeFor(err error) int {
-	_ = err
+	var coded *deploy.CodedError
+	if errors.As(err, &coded) {
+		return int(coded.Code)
+	}
 	return 1
 }
 
-// Sentinel for "not yet implemented" stubs in Phase 1.
+// Sentinel for "not yet implemented" stubs. Phase 6 will retire it once
+// init / doctor SSH checks land.
 var errNotYetImplemented = fmt.Errorf("not yet implemented in this build")
 
 // stub returns a runE that prints which phase will deliver this subcommand,
-// then exits 1. Used during scaffold; replaced in subsequent phases.
+// then exits 1. Used during scaffold; replaced as we land each feature.
 func stub(phase string) func(cmd *cobra.Command, args []string) error {
 	return func(cmd *cobra.Command, args []string) error {
-		fmt.Fprintf(os.Stderr, "%s: %s (lands in %s)\n", cmd.Name(), errNotYetImplemented, phase)
+		fmt.Fprintf(cmd.ErrOrStderr(), "%s: %s (lands in %s)\n", cmd.Name(), errNotYetImplemented, phase)
 		return errNotYetImplemented
 	}
 }

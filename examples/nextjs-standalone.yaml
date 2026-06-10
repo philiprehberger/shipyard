@@ -1,0 +1,43 @@
+# Shipyard config for a Next.js app built in standalone mode and reloaded
+# via PM2. Mirrors the deploy pattern documented at
+# ~/projects/income-ops/.guides/new_demo_project.md § 5 "Rsync overwrite +
+# PM2 reload".
+
+app: my-nextjs-app
+
+host:
+  ssh: ubuntu@1.2.3.4
+  identity_file: ~/.ssh/id_ed25519
+  release_root: /var/www/my-nextjs-app
+
+artifact:
+  source: ./.next/standalone-bundle.tar.gz
+  format: tar.gz
+
+releases:
+  keep: 5
+
+shared:
+  files:
+    - .env
+
+health_check:
+  url: https://my-nextjs-app.example.com/
+  status: 200
+  retries: 10
+  delay: 3s
+  timeout: 5s
+
+hooks:
+  pre_upload:
+    - npm ci
+    - npm run build
+    - npm run pack
+  post_flip:
+    - bash -lc "pm2 reload my-nextjs-app"
+  on_rollback:
+    - bash -lc "pm2 reload my-nextjs-app"
+
+lock:
+  enabled: true
+  ttl: 10m

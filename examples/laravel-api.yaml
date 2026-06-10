@@ -1,0 +1,53 @@
+# Shipyard config for a Laravel API deployed via atomic releases.
+#
+# Mirrors webhook-relay's deploy shape: composer + npm build locally, ship
+# a zipped vendor + public + app tree, run migrations remotely, reload
+# Apache on flip.
+
+app: webhook-relay
+
+host:
+  ssh: ubuntu@1.2.3.4
+  identity_file: ~/.ssh/id_ed25519
+  release_root: /var/www/webhook-relay
+
+artifact:
+  source: ./deploy-staging/release.zip
+  format: zip
+
+releases:
+  keep: 5
+
+shared:
+  files:
+    - .env
+  dirs:
+    - storage
+    - bootstrap/cache
+
+health_check:
+  url: https://api.webhook-relay.example.com/healthz
+  expect: "healthy"
+  status: 200
+  retries: 10
+  delay: 3s
+  timeout: 5s
+
+hooks:
+  pre_upload:
+    - composer install --no-dev --optimize-autoloader
+    - npm ci
+    - npm run build
+  post_extract:
+    - php artisan migrate --force
+    - php artisan config:cache
+    - php artisan route:cache
+    - php artisan view:cache
+  post_flip:
+    - sudo systemctl reload apache2
+  on_rollback:
+    - sudo systemctl reload apache2
+
+lock:
+  enabled: true
+  ttl: 10m

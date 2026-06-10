@@ -1,0 +1,51 @@
+# Shipyard config for a Laravel API with a supervisor-managed queue
+# worker (Horizon or vanilla Laravel queue). The post_flip kick-restarts
+# the worker so it picks up new code immediately.
+
+app: pennant
+
+host:
+  ssh: ubuntu@1.2.3.4
+  identity_file: ~/.ssh/id_ed25519
+  release_root: /var/www/pennant
+
+artifact:
+  source: ./deploy-staging/release.tar.gz
+  format: tar.gz
+
+releases:
+  keep: 7
+
+shared:
+  files:
+    - .env
+  dirs:
+    - storage
+
+health_check:
+  url: https://api.pennant.example.com/healthz
+  expect: "healthy"
+  retries: 12
+  delay: 5s
+  timeout: 10s
+
+hooks:
+  pre_upload:
+    - composer install --no-dev --optimize-autoloader
+    - npm ci
+    - npm run build
+  post_extract:
+    - php artisan migrate --force
+    - php artisan config:cache
+  post_flip:
+    - sudo systemctl reload apache2
+    - sudo supervisorctl restart pennant-horizon
+    - sudo supervisorctl restart pennant-sse
+  on_rollback:
+    - sudo systemctl reload apache2
+    - sudo supervisorctl restart pennant-horizon
+    - sudo supervisorctl restart pennant-sse
+
+lock:
+  enabled: true
+  ttl: 15m

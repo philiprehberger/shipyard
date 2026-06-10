@@ -129,7 +129,7 @@ hooks:
 
       <div className="callout">
         <p>
-          <strong>v0.0.1 is shipping today.</strong> The CLI does the entire atomic-release lifecycle and is smoketested against a real EC2 host. The docs site itself is deployed via Shipyard (eat-own-cooking). webhook-relay's deploy migrates to Shipyard 30 days after v0.1.0 once the failure modes shake out.
+          <strong>This page is deployed by Shipyard.</strong> The docs site you&rsquo;re reading lives at <code>/var/www/shipyard-web/current</code>, which is a symlink Shipyard flipped after a health-gated promotion. Every push to <code>main</code> reaches you the same way. webhook-relay&rsquo;s deploy migrates onto Shipyard 30 days after v0.1.0 once the failure modes shake out.
         </p>
       </div>
 

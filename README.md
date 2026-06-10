@@ -108,6 +108,10 @@ hooks:
 | 4 | Health-check failure (rolled back) |
 | 5 | Lock held by another process |
 
+## Self-deployed
+
+The docs site at https://shipyard.philiprehberger.com is provisioned by Shipyard. Its config lives in [shipyard.yaml](shipyard.yaml) at the root of this repo — eat-your-own-cooking is real.
+
 ## License
 
 [MIT](LICENSE).

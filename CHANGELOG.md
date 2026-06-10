@@ -4,6 +4,24 @@ All notable changes to Shipyard documented here. Format follows [keep-a-changelo
 
 ## [Unreleased]
 
+## [0.1.0] — 2026-06-10
+
+The dogfood release. Shipyard now deploys itself: the docs site at https://shipyard.philiprehberger.com is provisioned via atomic releases under `/var/www/shipyard-web/`, with the `current` symlink flipped by Shipyard on every push to `main`.
+
+### Added
+
+- Self-deploy via `shipyard.yaml` at the repo root. The same lifecycle that ships your apps now ships these docs.
+- Rollback + roll-forward verified round-trip against a live PM2-fronted Next.js app: symlink flips correctly, `pm2 reload` runs as the `on_rollback` hook, no requests dropped.
+- Landing page callout reflects current self-deploy status instead of the v0.0.1 placeholder.
+
+### Changed
+
+- `examples/laravel-with-queue.yaml` documents the supervisor-restart pattern.
+
+### Known limitations
+
+Same as v0.0.1 — `shipyard init` and the SSH/writability part of `shipyard doctor` still land in v0.2.
+
 ## [0.0.1] — 2026-06-10
 
 First publishable build. Proves the release pipeline works end-to-end; the CLI does the entire atomic-release lifecycle but should still be treated as a preview while real-world configs settle.

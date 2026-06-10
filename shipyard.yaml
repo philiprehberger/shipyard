@@ -1,0 +1,47 @@
+# Shipyard self-deploys. The docs site at shipyard.philiprehberger.com is
+# atomic-release-managed by the same CLI documented at /docs/cli.
+#
+# Eat your own cooking.
+#
+# Notes:
+# - PM2 ecosystem entry for shipyard-web has cwd: /var/www/shipyard-web/current
+#   (one level deeper than the release_root so the atomic flip works).
+# - First-time setup requires the release_root to be empty; subsequent deploys
+#   manage releases/, shared/, current automatically.
+
+app: shipyard-web
+
+host:
+  ssh: ubuntu@54.190.150.0
+  identity_file: ~/.ssh/ps4_new
+  release_root: /var/www/shipyard-web
+
+artifact:
+  source: ./dist/shipyard-web-release.tar.gz
+  format: tar.gz
+
+releases:
+  keep: 5
+
+# server.js is the Next.js standalone entrypoint — no per-release env files
+# beyond what's baked into the build, so no shared.files entries needed.
+
+health_check:
+  url: https://shipyard.philiprehberger.com/
+  status: 200
+  retries: 15
+  delay: 3s
+  timeout: 5s
+
+hooks:
+  pre_upload:
+    - cd web && npm ci
+    - cd web && node .scripts/package.js
+  post_flip:
+    - source ~/.nvm/nvm.sh && pm2 reload shipyard-web
+  on_rollback:
+    - source ~/.nvm/nvm.sh && pm2 reload shipyard-web
+
+lock:
+  enabled: true
+  ttl: 10m

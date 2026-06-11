@@ -1,45 +1,61 @@
+version: "2"
 run:
-  timeout: 5m
-  go: "1.23"
-
+  go: "1.25"
 linters:
-  disable-all: true
+  default: none
   enable:
+    - bodyclose
     - errcheck
+    - gosec
     - govet
     - ineffassign
+    - misspell
+    - nilerr
+    - prealloc
+    - revive
+    - rowserrcheck
     - staticcheck
+    - unconvert
     - unused
+  settings:
+    gosec:
+      excludes:
+        - G204  # Subprocess launched with variable — unavoidable in a tool that runs shell hooks
+    revive:
+      rules:
+        - name: exported
+          arguments:
+            - disableStutteringCheck
+        - name: var-naming
+        - name: package-comments
+          disabled: true
+        - name: indent-error-flow
+        - name: error-return
+        - name: error-strings
+        - name: error-naming
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    rules:
+      - linters:
+          - errcheck
+          - gosec
+        path: _test\.go
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+formatters:
+  enable:
     - gofmt
     - goimports
-    - misspell
-    - revive
-    - gosec
-    - unconvert
-    - prealloc
-    - bodyclose
-    - nilerr
-    - rowserrcheck
-
-linters-settings:
-  revive:
-    rules:
-      - name: exported
-        arguments: ["disableStutteringCheck"]
-      - name: var-naming
-      - name: package-comments
-        disabled: true
-      - name: indent-error-flow
-      - name: error-return
-      - name: error-strings
-      - name: error-naming
-  gosec:
-    excludes:
-      - G204  # Subprocess launched with variable — unavoidable in a tool that runs shell hooks
-
-issues:
-  exclude-rules:
-    - path: _test\.go
-      linters:
-        - gosec
-        - errcheck
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$

@@ -8,18 +8,14 @@ on:
 
 jobs:
   test:
-    name: Test (Go ${{ matrix.go }})
+    name: Test
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        go: ['1.23.x', '1.25.x']
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-go@v5
         with:
-          go-version: ${{ matrix.go }}
+          go-version: '1.25.x'
           cache-dependency-path: cli/go.sum
 
       - name: Verify go mod tidy
@@ -33,7 +29,6 @@ jobs:
         run: go test -race -coverprofile=coverage.txt -covermode=atomic ./...
 
       - name: Upload coverage
-        if: matrix.go == '1.25.x'
         uses: actions/upload-artifact@v4
         with:
           name: coverage
@@ -50,9 +45,9 @@ jobs:
           go-version: '1.25.x'
           cache-dependency-path: cli/go.sum
 
-      - uses: golangci/golangci-lint-action@v6
+      - uses: golangci/golangci-lint-action@v9
         with:
-          version: v1.62
+          version: v2.12
           working-directory: cli
           args: --config=../.golangci.yml
 
@@ -71,9 +66,15 @@ jobs:
           go-version: '1.25.x'
           cache-dependency-path: cli/go.sum
 
-      - name: Build
+      - name: Build (unix)
+        if: runner.os != 'Windows'
         working-directory: cli
         run: go build -o shipyard ./cmd/shipyard
+
+      - name: Build (windows)
+        if: runner.os == 'Windows'
+        working-directory: cli
+        run: go build -o shipyard.exe ./cmd/shipyard
 
       - name: Smoke-test (unix)
         if: runner.os != 'Windows'

@@ -26,12 +26,12 @@ import (
 type ExitCode int
 
 const (
-	ExitSuccess          ExitCode = 0
-	ExitUsage            ExitCode = 1
-	ExitTransport        ExitCode = 2
-	ExitDeployStep       ExitCode = 3
-	ExitHealthFailure    ExitCode = 4
-	ExitLockHeld         ExitCode = 5
+	ExitSuccess       ExitCode = 0
+	ExitUsage         ExitCode = 1
+	ExitTransport     ExitCode = 2
+	ExitDeployStep    ExitCode = 3
+	ExitHealthFailure ExitCode = 4
+	ExitLockHeld      ExitCode = 5
 )
 
 // CodedError tags an error with the exit code that should be returned
@@ -50,11 +50,11 @@ func coded(code ExitCode, format string, args ...any) error {
 
 // Options configures Run.
 type Options struct {
-	Config           *config.Config
-	Log              *logger.Logger
-	DryRun           bool
-	SkipHealth       bool
-	ForceLockSteal   bool
+	Config            *config.Config
+	Log               *logger.Logger
+	DryRun            bool
+	SkipHealth        bool
+	ForceLockSteal    bool
 	ReleaseIDOverride string
 }
 

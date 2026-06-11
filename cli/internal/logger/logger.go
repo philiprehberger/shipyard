@@ -8,6 +8,7 @@
 package logger
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -23,7 +24,7 @@ import (
 // so the wrapping code can choose phase boundaries without each call
 // site repeating itself.
 type Logger struct {
-	mu      sync.Mutex
+	mu      *sync.Mutex
 	json    *slog.Logger
 	pretty  io.Writer
 	color   bool
@@ -51,6 +52,7 @@ func NewLogger(opts Options) *Logger {
 		Level: slog.LevelDebug,
 	})
 	return &Logger{
+		mu:      &sync.Mutex{},
 		json:    slog.New(jsonHandler),
 		pretty:  opts.PrettyOut,
 		color:   opts.Color && isTTY(opts.PrettyOut),
@@ -96,7 +98,7 @@ func (l *Logger) emit(level slog.Level, msg string, attrs []slog.Attr) {
 	if l.phase != "" {
 		attrs = append([]slog.Attr{slog.String("phase", l.phase)}, attrs...)
 	}
-	l.json.LogAttrs(nil, level, msg, attrs...)
+	l.json.LogAttrs(context.Background(), level, msg, attrs...)
 
 	// Pretty sink — only when verbose, or when level >= Info.
 	if level < slog.LevelInfo && !l.verbose {

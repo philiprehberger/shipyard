@@ -23,9 +23,9 @@ import (
 // security state — it's diagnostic so a human can tell who else is in
 // the middle of deploying.
 type Lock struct {
-	HeldBy    string    `json:"held_by"`
-	Hostname  string    `json:"hostname"`
-	PID       int       `json:"pid"`
+	HeldBy     string    `json:"held_by"`
+	Hostname   string    `json:"hostname"`
+	PID        int       `json:"pid"`
 	AcquiredAt time.Time `json:"acquired_at"`
 }
 
@@ -97,10 +97,8 @@ func (h *Handle) Release(ctx context.Context) error {
 	if h == nil || h.sftp == nil {
 		return nil
 	}
-	if err := ctx.Err(); err != nil {
-		// Even if the context is canceled, still try to release. Holding
-		// a lock through a crash is the worst possible state.
-	}
+	// Release ignores ctx.Err — holding a lock through a crash is the
+	// worst possible state, so we attempt the remove unconditionally.
 	if err := h.sftp.Remove(h.path); err != nil {
 		if errors.Is(err, os.ErrNotExist) {
 			return nil

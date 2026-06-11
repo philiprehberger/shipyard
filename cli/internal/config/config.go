@@ -24,14 +24,14 @@ const DefaultFilename = "shipyard.yaml"
 
 // Config is the top-level shipyard.yaml document.
 type Config struct {
-	App         string          `yaml:"app"`
-	Host        HostConfig      `yaml:"host"`
-	Artifact    ArtifactConfig  `yaml:"artifact"`
-	Releases    ReleasesConfig  `yaml:"releases"`
-	Shared      SharedConfig    `yaml:"shared"`
-	HealthCheck HealthCheck     `yaml:"health_check"`
-	Hooks       Hooks           `yaml:"hooks"`
-	Lock        LockConfig      `yaml:"lock"`
+	App         string         `yaml:"app"`
+	Host        HostConfig     `yaml:"host"`
+	Artifact    ArtifactConfig `yaml:"artifact"`
+	Releases    ReleasesConfig `yaml:"releases"`
+	Shared      SharedConfig   `yaml:"shared"`
+	HealthCheck HealthCheck    `yaml:"health_check"`
+	Hooks       Hooks          `yaml:"hooks"`
+	Lock        LockConfig     `yaml:"lock"`
 
 	// Path that the config was loaded from, set by Load. Useful for relative
 	// path resolution (artifact.source, identity_file with ~).
@@ -233,7 +233,7 @@ func (v *ValidationError) Error() string {
 		return fmt.Sprintf("%s: %s", v.Issues[0].Field, v.Issues[0].Message)
 	}
 	var b strings.Builder
-	b.WriteString(fmt.Sprintf("%d validation issues:", len(v.Issues)))
+	fmt.Fprintf(&b, "%d validation issues:", len(v.Issues))
 	for _, i := range v.Issues {
 		b.WriteString("\n  - ")
 		b.WriteString(i.Field)

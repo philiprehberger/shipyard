@@ -34,10 +34,7 @@ type ReleaseInfo struct {
 }
 
 // GetStatus connects to the remote and reads layout + lock state.
-func GetStatus(ctx context.Context, cfg *config.Config, log *logger.Logger) (*Status, error) {
-	if log == nil {
-		log = logger.NewLogger(logger.Options{})
-	}
+func GetStatus(ctx context.Context, cfg *config.Config, _ *logger.Logger) (*Status, error) {
 	sshC, closeFn, err := openSSH(ctx, cfg)
 	if err != nil {
 		return nil, err

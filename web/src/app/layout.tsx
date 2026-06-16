@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import GoogleAnalytics from '@/components/analytics/GoogleAnalytics';
 
 export const metadata: Metadata = {
   title: {
@@ -34,6 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Header />
         <main className="mx-auto max-w-3xl px-6 py-16 sm:py-24">{children}</main>
         <Footer />
+        <GoogleAnalytics />
       </body>
     </html>
   );

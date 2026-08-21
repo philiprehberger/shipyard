@@ -12,7 +12,7 @@
 app: shipyard-web
 
 host:
-  ssh: ubuntu@44.245.176.5
+  ssh: ubuntu@44.254.213.202
   identity_file: ~/.ssh/scopeforged_rebuild
   release_root: /var/www/shipyard-web
 

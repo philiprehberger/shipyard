@@ -12,8 +12,8 @@
 app: shipyard-web
 
 host:
-  ssh: ubuntu@35.80.110.71
-  identity_file: ~/.ssh/ps4_new
+  ssh: ubuntu@44.245.176.5
+  identity_file: ~/.ssh/scopeforged_rebuild
   release_root: /var/www/shipyard-web
 
 artifact:

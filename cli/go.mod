@@ -3,7 +3,7 @@ module github.com/philiprehberger/shipyard/cli
 go 1.26.0
 
 require (
-	github.com/pkg/sftp v1.13.11
+	github.com/pkg/sftp v1.13.12
 	github.com/spf13/cobra v1.10.2
 	golang.org/x/crypto v0.58.0
 	gopkg.in/yaml.v3 v3.0.1
